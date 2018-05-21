@@ -6,6 +6,14 @@
     <item android:id="@+id/action_reset"
         android:title="@string/action_reset"
         android:icon="@drawable/new_game_icon"
-        app:showAsAction="always"/>
+        app:showAsAction="ifRoom"/>
+    <item android:id="@+id/right_to_left"
+        android:title="@string/deal_right"
+        android:icon="@drawable/new_game_icon"
+        app:showAsAction="never"/>
+    <item android:id="@+id/left_to_right"
+        android:title="@string/deal_left"
+        android:icon="@drawable/new_game_icon"
+        app:showAsAction="never"/>
 
 </menu>

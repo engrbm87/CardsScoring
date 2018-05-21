@@ -12,16 +12,8 @@ public class RoundScores {
     private String mPlayerTwoScore;
     private String mPlayerThreeScore;
     private String mPlayerFourScore;
-    private int mRoundNumber = 0;
+    private String mRoundNumber;
 
-    public RoundScores(String PlayerOneScore, String PlayerTwoScore, String PlayerThreeScore, String PlayerFourScore, int RoundNumber)
-    {
-        mPlayerOneScore = PlayerOneScore;
-        mPlayerTwoScore = PlayerTwoScore;
-        mPlayerThreeScore = PlayerThreeScore;
-        mPlayerFourScore = PlayerFourScore;
-        mRoundNumber = RoundNumber;
-    }
 
     public RoundScores(int [] PlayerScores, int RoundNumber)
     {
@@ -29,7 +21,7 @@ public class RoundScores {
         mPlayerTwoScore = String.valueOf(PlayerScores[1]);
         mPlayerThreeScore = String.valueOf(PlayerScores[2]);
         mPlayerFourScore = String.valueOf(PlayerScores[3]);
-        mRoundNumber = RoundNumber;
+        mRoundNumber = String.valueOf(RoundNumber);
     }
     /**
      * Get the score of Player One
@@ -61,6 +53,6 @@ public class RoundScores {
      * Get the Round Number
      */
     public String getRoundNumber() {
-        return String.valueOf(mRoundNumber);
+        return mRoundNumber;
     }
 }
