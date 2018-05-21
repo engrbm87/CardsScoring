@@ -5,15 +5,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.simon_eye.cardsscoring.likha">
+    android:background="@color/tan_background"
+    tools:context="com.simon_eye.cardsscoring.likhaActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/likha_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorPrimary"
+        android:elevation="4dp"
         app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        android:elevation="4dp" />
+        app:title="@string/gameTitle"
+        app:titleTextColor="@android:color/white" />
 
 
     <LinearLayout
@@ -29,40 +32,25 @@
         app:layout_constraintTop_toBottomOf="@+id/likha_toolbar">
 
         <EditText
-            android:id="@+id/player1"
+            android:id="@+id/Player1"
             style="@style/playerNames"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="P1"
-            android:imeOptions="actionNext" />
+            android:hint="@string/p1Name" />
 
         <EditText
-            android:id="@+id/player2"
+            android:id="@+id/Player2"
             style="@style/playerNames"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="P2"
-            android:imeOptions="actionNext" />
+            android:hint="@string/p2Name" />
 
         <EditText
-            android:id="@+id/player3"
+            android:id="@+id/Player3"
             style="@style/playerNames"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="P3"
-            android:imeOptions="actionNext" />
+            android:hint="@string/p3Name" />
 
         <EditText
-            android:id="@+id/player4"
+            android:id="@+id/Player4"
             style="@style/playerNames"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="P4"
-            android:imeOptions="actionNext" />
+            android:hint="@string/p4Name"
+            android:imeOptions="actionDone" />
 
     </LinearLayout>
 
@@ -74,14 +62,38 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/currentScore"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         android:divider="@null"
         android:dividerHeight="0dp"
-        app:layout_constraintTop_toBottomOf="@+id/players_initials">
+        app:layout_constraintBottom_toTopOf="@id/currentScore"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/players_initials">
 
     </ListView>
+
+    <LinearLayout
+        android:id="@+id/resultView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginStart="32dp"
+        android:background="@color/colorPrimaryDark"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@id/submit_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:id="@+id/resultTextView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textAlignment="center"
+            android:textColor="@android:color/holo_red_dark"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            tools:text="Player 1 Lost" />
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/currentScore"
@@ -92,75 +104,47 @@
         android:layout_marginStart="8dp"
         android:orientation="horizontal"
         android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@+id/submit_button"
+        app:layout_constraintBottom_toTopOf="@id/submit_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
         <EditText
             android:id="@+id/player1Score"
-            style="@style/playerNames"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="0"
-            android:imeOptions="actionNext"
-            android:inputType="number" />
+            style="@style/currentScore"
+            android:hint="0" />
 
         <EditText
             android:id="@+id/player2Score"
-            style="@style/playerNames"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="0"
-            android:imeOptions="actionNext"
-            android:inputType="number" />
+            style="@style/currentScore"
+            android:hint="0" />
 
         <EditText
             android:id="@+id/player3Score"
-            style="@style/playerNames"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="0"
-            android:imeOptions="actionNext"
-            android:inputType="number" />
+            style="@style/currentScore"
+            android:hint="0" />
 
         <EditText
             android:id="@+id/player4Score"
-            style="@style/playerNames"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
+            style="@style/currentScore"
             android:hint="0"
-            android:imeOptions="actionDone"
-            android:inputType="number" />
+            android:imeOptions="actionDone" />
 
     </LinearLayout>
+
     <Button
         android:id="@+id/start_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/buttons"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="24dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:text="Start"
-        android:textAlignment="center"
+        android:text="@string/startBtn"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/submit_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/buttons"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="24dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:text="Submit"
-        android:textAlignment="center"
+        android:text="@string/submitBtn"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -168,14 +152,10 @@
 
     <Button
         android:id="@+id/reset_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/buttons"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="24dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:text="New Game"
-        android:textAlignment="center"
+        android:onClick="resetGame"
+        android:text="@string/new_gameBtn"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
