@@ -38,6 +38,7 @@ public class RoundScoreAdapter extends ArrayAdapter<RoundScores> {
                     R.layout.scores_list, parent, false);
         }
 
+
         // Get the {@link RoundScores} object located at this position in the list
         RoundScores currentRoundScore = getItem(position);
 

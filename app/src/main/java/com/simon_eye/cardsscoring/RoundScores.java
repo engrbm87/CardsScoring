@@ -8,6 +8,8 @@ package com.simon_eye.cardsscoring;
 
 public class RoundScores {
 
+    public static final int LIKHA = 0;
+    public static final int TARNEEB = 1;
     private String mPlayerOneScore;
     private String mPlayerTwoScore;
     private String mPlayerThreeScore;
@@ -15,12 +17,18 @@ public class RoundScores {
     private String mRoundNumber;
 
 
-    public RoundScores(int [] PlayerScores, int RoundNumber)
+    public RoundScores(int[] PlayerScores, int RoundNumber, int gameType)
     {
-        mPlayerOneScore = String.valueOf(PlayerScores[0]);
-        mPlayerTwoScore = String.valueOf(PlayerScores[1]);
-        mPlayerThreeScore = String.valueOf(PlayerScores[2]);
-        mPlayerFourScore = String.valueOf(PlayerScores[3]);
+        if (gameType == LIKHA) {
+            mPlayerOneScore = String.valueOf(PlayerScores[0]);
+            mPlayerTwoScore = String.valueOf(PlayerScores[1]);
+            mPlayerThreeScore = String.valueOf(PlayerScores[2]);
+            mPlayerFourScore = String.valueOf(PlayerScores[3]);
+        } else if (gameType == TARNEEB) {
+            mPlayerOneScore = String.valueOf(PlayerScores[0]);
+            mPlayerTwoScore = String.valueOf(PlayerScores[1]);
+
+        }
         mRoundNumber = String.valueOf(RoundNumber);
     }
     /**

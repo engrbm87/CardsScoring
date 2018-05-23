@@ -15,6 +15,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Find the View that shows the numbers category
         TextView likha = findViewById(R.id.likha);
+        TextView tarneeb = findViewById(R.id.tarneeb);
 
         // Set a click listener on that View
         likha.setOnClickListener(new View.OnClickListener() {
@@ -23,6 +24,14 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent likhaActivity = new Intent(MainActivity.this, com.simon_eye.cardsscoring.likhaActivity.class);
                 startActivity(likhaActivity);
+            }
+        });
+        tarneeb.setOnClickListener(new View.OnClickListener() {
+            // The code in this method will be executed when the numbers View is clicked on.
+            @Override
+            public void onClick(View view) {
+                Intent tarneebActivity = new Intent(MainActivity.this, com.simon_eye.cardsscoring.tarneebActivity.class);
+                startActivity(tarneebActivity);
             }
         });
 
