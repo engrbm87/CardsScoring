@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -42,6 +43,8 @@ public class likhaActivity extends AppCompatActivity {
     private int[] playerScores = new int[4];  // Array to hold players score
     private ArrayList<RoundScores> roundScores = new ArrayList<>(); // Array list of round scores displayed in the listView
     private GestureDetectorCompat mDetector;  // Gesture Detector for doubleTap to complete the round score
+    private int[] submittedScore = new int[4];
+    private RoundScoreAdapter roundScoreAdapter;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -144,10 +147,23 @@ public class likhaActivity extends AppCompatActivity {
         // Create an {@link com.simon_eye.cardsscoring.RoundScoreAdapter}, whose data source is a list of
         // {@link RoundScores}. The adapter knows how to create list item views for each item
         // in the list.
-        final RoundScoreAdapter roundScoreAdapter = new RoundScoreAdapter(this, roundScores);
+        roundScoreAdapter = new RoundScoreAdapter(this, roundScores);
         // Get a reference to the ListView, and attach the adapter to the listView.
-        final ListView listView = findViewById(R.id.scoresList);
-        listView.setAdapter(roundScoreAdapter);
+        final ListView roundScoreList = findViewById(R.id.scoresList);
+        roundScoreList.setAdapter(roundScoreAdapter);
+
+        // Set onitemclick listener to edit the last round score submitted
+
+        roundScoreList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                if (position == 0) {
+                    redisplayLastScore();
+                    return true;
+                }
+                return false;
+            }
+        });
 
         // When pressing Submit get the scores and store them after validating the round score total
         submitBtn.setOnClickListener(new View.OnClickListener() {
@@ -167,12 +183,8 @@ public class likhaActivity extends AppCompatActivity {
                             Toast.LENGTH_SHORT).show();
                     return;
                 }
-                // create a new @link roundScore object from the currentScore
-                roundScores.add(0, new RoundScores(playerScores, roundIndex, RoundScores.LIKHA));
-                roundIndex++;
 
-                // TODO animate adding new item to listView
-                roundScoreAdapter.notifyDataSetChanged();
+
 
                 // Check if Game ended
                 if (gameEndCheck()) {
@@ -188,6 +200,51 @@ public class likhaActivity extends AppCompatActivity {
                 clearCurrentScore();
             }
         });
+
+    }
+
+    private void redisplayLastScore() {
+
+        //display the scores from the submittedScores []
+        ViewGroup group = findViewById(R.id.currentScore);
+        for (int i = 0, count = group.getChildCount(); i < count; ++i) {
+            View view = group.getChildAt(i);
+            if (view instanceof EditText) {
+                ((EditText) view).setText(String.valueOf(submittedScore[i]));
+            }
+        }
+        // hide the submit button
+        final Button submitBtn = findViewById(R.id.submit_button);
+        submitBtn.setVisibility(View.INVISIBLE);
+
+        final LinearLayout editScoreLayout = findViewById(R.id.editScoreButtons);
+        editScoreLayout.setVisibility(View.VISIBLE);
+        Button cancelBtn = findViewById(R.id.cancel_button);
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editScoreLayout.setVisibility(View.INVISIBLE);
+                clearCurrentScore();
+                submitBtn.setVisibility(View.VISIBLE);
+            }
+        });
+
+        Button editBtn = findViewById(R.id.edit_button);
+        editBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for (int i = 0; i < submittedScore.length; i++) {
+                    playerScores[i] -= submittedScore[i];
+                }
+                roundIndex--;
+                roundScores.remove(0);
+                updateScore();
+                editScoreLayout.setVisibility(View.INVISIBLE);
+                clearCurrentScore();
+                submitBtn.setVisibility(View.VISIBLE);
+            }
+        });
+
 
     }
 
@@ -260,7 +317,7 @@ public class likhaActivity extends AppCompatActivity {
     private boolean updateScore() {
 
         // get value from editText fields
-        int[] submittedScore = new int[4];
+
         for (int i = 0; i < 4; i++) {
             String playerIndex = "player" + (i + 1) + "Score";
             Log.i("RoundScores", "Player1Index = " + playerIndex);
@@ -293,6 +350,11 @@ public class likhaActivity extends AppCompatActivity {
         for (int i = 0; i < submittedScore.length; i++) {
             playerScores[i] += submittedScore[i];
         }
+        // create a new @link roundScore object from the currentScore
+        roundScores.add(0, new RoundScores(playerScores, roundIndex, RoundScores.LIKHA));
+        roundIndex++;
+        // TODO animate adding new item to listView
+        roundScoreAdapter.notifyDataSetChanged();
         return true;
     }
 
