@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
             // The code in this method will be executed when the numbers View is clicked on.
             @Override
             public void onClick(View view) {
-                Intent likhaActivity = new Intent(MainActivity.this, com.simon_eye.cardsscoring.likhaActivity.class);
+                Intent likhaActivity = new Intent(MainActivity.this, com.simon_eye.cardsscoring.LikhaGame.class);
                 startActivity(likhaActivity);
             }
         });

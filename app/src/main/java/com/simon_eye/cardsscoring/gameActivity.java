@@ -1,9 +1,9 @@
 package com.simon_eye.cardsscoring;
 
 import android.content.res.Configuration;
+import android.os.Bundle;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -23,25 +23,41 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class likhaActivity extends AppCompatActivity {
+/**
+ * Created by rami_m on 5/26/2018.
+ */
 
+public abstract class gameActivity extends AppCompatActivity {
 
-    private static final int FINAL_SCORE = 101;  // First player to reach 101 or higher loses
-    private static final int ROUND_TOTAL = 36;  // Round score total must be 36
-    private static final int NUM_OF_PLAYERS = 4; // number of players in Likha
-    public View vTouch;  // Holder for doubleTapped  view
-    protected ArrayList<String> playerNames = new ArrayList<>(); // Store PlayerNames and display them in new games
+    static int FINAL_SCORE;  // First player to reach 101 or higher loses
+    static int ROUND_TOTAL;  // Round score total must be 36
+    static int NUM_OF_PLAYERS; // number of players in Likha
+    static int gameType; // specify game type for scoreAdapter
+    ArrayList<String> playerNames = new ArrayList<>(); // Store PlayerNames and display them in new games
+    int[] playerScores;  // Array to hold players score
+    int[] lastScore;     // Last correct submitted score
+    int[] submittedScore; // current submitted score that will be checked
+    boolean mGameEnd = false;
+    private View vTouch;  // Holder for doubleTapped  view
     private int roundIndex = 1;  // Round index holder
-    private int[] playerScores = new int[NUM_OF_PLAYERS];  // Array to hold players score
     private ArrayList<RoundScores> roundScores = new ArrayList<>(); // Array list of round scores displayed in the listView
     private GestureDetectorCompat mDetector;  // Gesture Detector for doubleTap to complete the round score
-    private int[] submittedScore = new int[NUM_OF_PLAYERS];
     private RoundScoreAdapter roundScoreAdapter;
-    private boolean mGameEnd = false;
+
+    public gameActivity(int FINAL_SCORE, int ROUND_TOTAL, int NUM_OF_PLAYERS, int gameType) {
+        gameActivity.FINAL_SCORE = FINAL_SCORE;
+        gameActivity.ROUND_TOTAL = ROUND_TOTAL;
+        gameActivity.NUM_OF_PLAYERS = NUM_OF_PLAYERS;
+        gameActivity.gameType = gameType;
+
+        lastScore = new int[NUM_OF_PLAYERS];
+        playerScores = new int[NUM_OF_PLAYERS];
+
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -65,23 +81,18 @@ public class likhaActivity extends AppCompatActivity {
         }
     }
 
+    public void setLayoutDirection(String locale) {
+
+        Configuration configuration = getResources().getConfiguration();
+        configuration.setLayoutDirection(new Locale(locale));
+        getResources().updateConfiguration(configuration, getResources().getDisplayMetrics());
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
         getMenuInflater().inflate(R.menu.actionbar, menu);
         return true;
-    }
-
-    /**
-     *
-     * @param locale is used to change the layout direction for Dealing right or left
-     */
-
-    public void setLayoutDirection (String locale) {
-
-        Configuration configuration = getResources().getConfiguration();
-        configuration.setLayoutDirection(new Locale(locale));
-        getResources().updateConfiguration(configuration, getResources().getDisplayMetrics());
     }
 
 
@@ -95,7 +106,7 @@ public class likhaActivity extends AppCompatActivity {
 
         // Add EditText fields for each player name and score
         final LinearLayout playerNameView = findViewById(R.id.players_initials);
-        final LinearLayout currentScoreLayout  = findViewById(R.id.currentScore);
+        final LinearLayout currentScoreLayout = findViewById(R.id.currentScore);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
 
         for (int i = 0; i < NUM_OF_PLAYERS; i++) {
@@ -124,15 +135,15 @@ public class likhaActivity extends AppCompatActivity {
         roundScoreList.setAdapter(roundScoreAdapter);
 
         // set the mDetector to attach it to the onTouchListener
-        mDetector = new GestureDetectorCompat(likhaActivity.this, new MyGestureListener());
+        mDetector = new GestureDetectorCompat(this, new MyGestureListener());
         for (int i = 0; i < currentScoreLayout.getChildCount(); i++) {
             EditText tempScore = (EditText) currentScoreLayout.getChildAt(i);
 
             tempScore.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
-                        vTouch = v;
-                        return mDetector.onTouchEvent(event);
+                    vTouch = v;
+                    return mDetector.onTouchEvent(event);
                 }
             });
         }
@@ -197,14 +208,12 @@ public class likhaActivity extends AppCompatActivity {
                     return;
                 }
                 // check submitted score and update it
-                if (!updateScore()) {
-                    Toast.makeText(getApplicationContext(), "Sum must be 36",
-                            Toast.LENGTH_SHORT).show();
-                    return;
-                }
+                if (submittedScoreCheck())
+                    updatePlayerScore(gameType);
 
                 // Check if Game ended
                 if (gameEndCheck()) {
+                    mGameEnd = true;
                     currentScoreLayout.setVisibility(View.INVISIBLE);
                     submitBtn.setVisibility(View.INVISIBLE);
                     resetBtn.setVisibility(View.VISIBLE);
@@ -217,14 +226,14 @@ public class likhaActivity extends AppCompatActivity {
 
     }
 
-    private void redisplayLastScore() {
+    public void redisplayLastScore() {
 
         //display the scores from the submittedScores []
         ViewGroup group = findViewById(R.id.currentScore);
         for (int i = 0, count = group.getChildCount(); i < count; ++i) {
             View view = group.getChildAt(i);
             if (view instanceof EditText) {
-                ((EditText) view).setText(String.valueOf(submittedScore[i]));
+                ((EditText) view).setText(String.valueOf(lastScore[i]));
             }
         }
         // hide the submit button
@@ -247,15 +256,17 @@ public class likhaActivity extends AppCompatActivity {
         editBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                for (int i = 0; i < submittedScore.length; i++) {
-                    playerScores[i] -= submittedScore[i];
+                if (submittedScoreCheck()) {
+                    for (int i = 0; i < lastScore.length; i++) {
+                        playerScores[i] -= lastScore[i];
+                    }
+                    roundIndex--;
+                    roundScores.remove(0);
+                    updatePlayerScore(gameType);
+                    editScoreLayout.setVisibility(View.INVISIBLE);
+                    clearCurrentScore();
+                    submitBtn.setVisibility(View.VISIBLE);
                 }
-                roundIndex--;
-                roundScores.remove(0);
-                updateScore();
-                editScoreLayout.setVisibility(View.INVISIBLE);
-                clearCurrentScore();
-                submitBtn.setVisibility(View.VISIBLE);
             }
         });
         MarginTransition cancelBtnAnim = new MarginTransition(cancelBtn, 150, 0);
@@ -274,8 +285,7 @@ public class likhaActivity extends AppCompatActivity {
         recreate();
     }
 
-    private void clearCurrentScore()
-    {
+    private void clearCurrentScore() {
         // clear score input fields for next round
         ViewGroup group = findViewById(R.id.currentScore);
         for (int i = 0, count = group.getChildCount(); i < count; ++i) {
@@ -286,99 +296,67 @@ public class likhaActivity extends AppCompatActivity {
         }
     }
 
-    private boolean gameEndCheck() {
-        for (int i = 0; i < playerScores.length; i++) {
-            if (playerScores[i] >= FINAL_SCORE) {
-                TextView resultTextView = findViewById(R.id.resultTextView);
-                resultTextView.setText(String.format("%s Lost", playerNames.get(i)));
-                Animation anim = new AlphaAnimation(0.0f, 1.0f);
-                anim.setDuration(500); //You can manage the time of the blink with this parameter
-                anim.setStartOffset(20);
-                anim.setRepeatMode(Animation.RESTART);
-                anim.setRepeatCount(Animation.INFINITE);
-                resultTextView.startAnimation(anim);
-                // Display game result
-                LinearLayout resultView = findViewById(R.id.resultView);
-                resultView.setVisibility(View.VISIBLE);
-                mGameEnd = true;
-                return true;
-            }
-        }
-        return false;
+    void displayGameResult(String gameResult) {
+        TextView resultTextView = findViewById(R.id.resultTextView);
+        resultTextView.setText(gameResult);
+        Animation anim = new AlphaAnimation(0.0f, 1.0f);
+        anim.setDuration(500); //You can manage the time of the blink with this parameter
+        anim.setStartOffset(20);
+        anim.setRepeatMode(Animation.RESTART);
+        anim.setRepeatCount(Animation.INFINITE);
+        resultTextView.startAnimation(anim);
+        // Display game result
+        LinearLayout resultView = findViewById(R.id.resultView);
+        resultView.setVisibility(View.VISIBLE);
     }
 
+    public abstract boolean gameEndCheck();
+
     /**
-     *
      * @param autoFillField is used to identify the field that needs to be auto completed when double tapped
      * @return false if the total input score is more 36 otherwise true
      */
 
-    private boolean autoCompleteScore(int autoFillField) {
-
-        int remainingScore = 0;
-
-        ViewGroup group = findViewById(R.id.currentScore);
-        for (int i = 0, count = group.getChildCount(); i < count; ++i) {
-            View view = group.getChildAt(i);
-            if (view instanceof EditText) {
-                String score = ((EditText) view).getText().toString();
-                if (!score.equals("") && view.getId() != autoFillField) {
-                    remainingScore += Integer.parseInt(score);
-                }
-            }
-        }
-        if (remainingScore > ROUND_TOTAL)
-            return false;
-        remainingScore = ROUND_TOTAL - remainingScore;
-        EditText scoreField = findViewById(autoFillField);
-        scoreField.setText(String.valueOf(remainingScore));
-        return true;
-    }
+    public abstract boolean autoCompleteScore(int autoFillField);
 
     /**
-     *
-     * @return false if the round total != 36 otherwise, the players scores are updated
+     * Store submitted score in @link lastScore array
      */
 
-    private boolean updateScore() {
+    public abstract boolean scoreCheck(int[] tempScore);
 
+    public boolean submittedScoreCheck() {
         // get value from editText fields
 
+        int[] tempScore = new int[NUM_OF_PLAYERS];
         ViewGroup group = findViewById(R.id.currentScore);
         for (int i = 0, count = group.getChildCount(); i < count; ++i) {
             View view = group.getChildAt(i);
             if (view instanceof EditText) {
                 String score = ((EditText) view).getText().toString();
                 if (score.equals(""))
-                    submittedScore[i] = 0;
+                    tempScore[i] = 0;
                 else
-                    submittedScore[i] = Integer.parseInt(score);
-                Log.i("RoundScores", "Player1Score = " + submittedScore[i]);
+                    tempScore[i] = Integer.parseInt(score);
+                Log.i("RoundScores", "Player1Score = " + tempScore[i]);
 
             }
         }
+        return scoreCheck(tempScore);
+    }
 
-        // check if the values sum to 36
-        int tempTotalScore = 0;
+    private void updatePlayerScore(int gameType) {
 
-        // create int [] out of the string [] of scores
-        for (int aSubmittedScore : submittedScore) {
-            tempTotalScore += aSubmittedScore;
-        }
-        // if the scores sum is not 36 return false
-        if (tempTotalScore != ROUND_TOTAL) {
-            return false;
-        }
-        // otherwise add the score for each player and return true
+        lastScore = submittedScore;
+        // add the score for each player and return true
         for (int i = 0; i < submittedScore.length; i++) {
             playerScores[i] += submittedScore[i];
         }
         // create a new @link roundScore object from the currentScore
-        roundScores.add(0, new RoundScores(playerScores, roundIndex, RoundScores.LIKHA));
+        roundScores.add(0, new RoundScores(playerScores, roundIndex, gameType));
         roundScoreAdapter.notifyDataSetChanged();
         // TODO animate adding new item to listView
         roundIndex++;
-        return true;
     }
 
     // custom class to handle doubleTap gestures on currentScore fields
@@ -388,13 +366,11 @@ public class likhaActivity extends AppCompatActivity {
         @Override
         public boolean onDoubleTap(MotionEvent e) {
 
-            if(!autoCompleteScore(vTouch.getId()))
-            {
+            if (!autoCompleteScore(vTouch.getId())) {
                 Toast.makeText(getApplicationContext(), String.valueOf(vTouch.getId()),
                         Toast.LENGTH_SHORT).show();
             }
             return true;
         }
     }
-
 }

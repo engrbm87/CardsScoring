@@ -5,11 +5,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     android:background="@color/tan_background"
     tools:context="com.simon_eye.cardsscoring.likhaActivity">
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/likha_toolbar"
+        android:id="@+id/game_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorPrimary"
@@ -29,28 +30,7 @@
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/likha_toolbar">
-
-        <EditText
-            android:id="@+id/Player1"
-            style="@style/playerNames"
-            android:hint="@string/p1Name" />
-
-        <EditText
-            android:id="@+id/Player2"
-            style="@style/playerNames"
-            android:hint="@string/p2Name" />
-
-        <EditText
-            android:id="@+id/Player3"
-            style="@style/playerNames"
-            android:hint="@string/p3Name" />
-
-        <EditText
-            android:id="@+id/Player4"
-            style="@style/playerNames"
-            android:hint="@string/p4Name"
-            android:imeOptions="actionDone" />
+        app:layout_constraintTop_toBottomOf="@+id/game_toolbar">
 
     </LinearLayout>
 
@@ -93,6 +73,7 @@
             android:textSize="32sp"
             android:textStyle="bold"
             tools:text="Player 1 Lost" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -108,34 +89,47 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <EditText
-            android:id="@+id/player1Score"
-            style="@style/currentScore"
-            android:hint="0" />
+    </LinearLayout>
 
-        <EditText
-            android:id="@+id/player2Score"
-            style="@style/currentScore"
-            android:hint="0" />
 
-        <EditText
-            android:id="@+id/player3Score"
-            style="@style/currentScore"
-            android:hint="0" />
+    <LinearLayout
+        android:id="@+id/editScoreButtons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
-        <EditText
-            android:id="@+id/player4Score"
-            style="@style/currentScore"
-            android:hint="0"
-            android:imeOptions="actionDone" />
+        <Button
+            android:id="@+id/cancel_button"
+            style="@style/buttons"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="0dp"
+            android:layout_weight="1"
+            android:text="Cancel"
+            android:theme="@style/buttons" />
+
+        <Button
+            android:id="@+id/edit_button"
+            style="@style/buttons"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="0dp"
+            android:layout_weight="1"
+            android:text="Edit"
+            android:theme="@style/buttons" />
 
     </LinearLayout>
+
 
     <Button
         android:id="@+id/start_button"
         style="@style/buttons"
         android:layout_alignParentBottom="true"
         android:text="@string/startBtn"
+        android:theme="@style/buttons"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -145,6 +139,7 @@
         style="@style/buttons"
         android:layout_alignParentBottom="true"
         android:text="@string/submitBtn"
+        android:theme="@style/buttons"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -156,6 +151,7 @@
         android:layout_alignParentBottom="true"
         android:onClick="resetGame"
         android:text="@string/new_gameBtn"
+        android:theme="@style/buttons"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

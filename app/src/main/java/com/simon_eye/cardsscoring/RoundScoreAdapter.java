@@ -1,10 +1,13 @@
 package com.simon_eye.cardsscoring;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -37,7 +40,6 @@ public class RoundScoreAdapter extends ArrayAdapter<RoundScores> {
             listItemView = LayoutInflater.from(getContext()).inflate(
                     R.layout.scores_list, parent, false);
         }
-
 
         // Get the {@link RoundScores} object located at this position in the list
         RoundScores currentRoundScore = getItem(position);

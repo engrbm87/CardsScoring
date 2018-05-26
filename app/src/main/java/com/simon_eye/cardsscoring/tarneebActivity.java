@@ -272,8 +272,8 @@ public class tarneebActivity extends AppCompatActivity {
 //        int tempTotalScore = 0;
 //
 //        // create int [] out of the string [] of scores
-//        for (int i = 0; i < submittedScore.length; i++) {
-//            tempTotalScore += submittedScore[i];
+//        for (int i = 0; i < lastScore.length; i++) {
+//            tempTotalScore += lastScore[i];
 //        }
 //        // if the scores sum is not 36 return false
 //        if (tempTotalScore != ROUND_TOTAL) {
