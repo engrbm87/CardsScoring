@@ -12,14 +12,15 @@ import android.widget.Toast;
 
 public class LikhaGame extends gameActivity {
 
-    public static final int ROUND_TOTAL = 36;  // Round score total must be 36
-    public static final int NUM_OF_PLAYERS = 4; // number of players in Likha
-    public static final int gameType = RoundScores.LIKHA; // specify game type for scoreAdapter
     // define variables for LIKHA game
     protected static final int FINAL_SCORE = 101;  // First player to reach 101 or higher loses
+    private static final int GAME_TITLE = R.string.likhaGameTitle;
+    private static final int ROUND_TOTAL = 36;  // Round score total must be 36
+    private static final int NUM_OF_PLAYERS = 4; // number of players in Likha
+    private static final String PLAYER_INITIAL = "P"; // player Initial in Likha game
 
     public LikhaGame() {
-        super(FINAL_SCORE, ROUND_TOTAL, NUM_OF_PLAYERS, gameType);
+        super(GAME_TITLE, NUM_OF_PLAYERS, PLAYER_INITIAL);
 
     }
 
@@ -36,7 +37,7 @@ public class LikhaGame extends gameActivity {
     }
 
     @Override
-    public boolean autoCompleteScore(int autoFillField) {
+    public boolean doubleTapAction(int autoFillField) {
         int remainingScore = 0;
 
         ViewGroup group = findViewById(R.id.currentScore);
@@ -49,8 +50,11 @@ public class LikhaGame extends gameActivity {
                 }
             }
         }
-        if (remainingScore > ROUND_TOTAL)
+        if (remainingScore > ROUND_TOTAL) {
+            Toast.makeText(getApplicationContext(), "Invalid Input",
+                    Toast.LENGTH_SHORT).show();
             return false;
+        }
         remainingScore = ROUND_TOTAL - remainingScore;
         EditText scoreField = findViewById(autoFillField);
         scoreField.setText(String.valueOf(remainingScore));

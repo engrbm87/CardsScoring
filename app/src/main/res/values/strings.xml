@@ -1,7 +1,8 @@
 <resources>
     <string name="app_name">Cards Scoring</string>
     <string name="action_reset">New Game</string>
-    <string name="gameTitle">Likha - ليخة</string>
+    <string name="likhaGameTitle">Likha - ليخة</string>
+    <string name="tarneebGameTitle">Tarneeb - طرنيب</string>
     <string name="p1Name">P1</string>
     <string name="p2Name">P2</string>
     <string name="p3Name">P3</string>

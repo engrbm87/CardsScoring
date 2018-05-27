@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
     android:background="@color/tan_background"
-    tools:context="com.simon_eye.cardsscoring.likhaActivity">
+    tools:context="com.simon_eye.cardsscoring.gameActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/game_toolbar"
@@ -16,7 +16,6 @@
         android:background="@color/colorPrimary"
         android:elevation="4dp"
         app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:title="@string/gameTitle"
         app:titleTextColor="@android:color/white" />
 
 
@@ -30,7 +29,7 @@
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/game_toolbar">
+        app:layout_constraintTop_toBottomOf="@id/game_toolbar">
 
     </LinearLayout>
 

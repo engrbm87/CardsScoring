@@ -1,5 +1,6 @@
 package com.simon_eye.cardsscoring;
 
+import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.view.GestureDetectorCompat;
@@ -32,11 +33,10 @@ import java.util.Locale;
 
 public abstract class gameActivity extends AppCompatActivity {
 
-    static int FINAL_SCORE;  // First player to reach 101 or higher loses
-    static int ROUND_TOTAL;  // Round score total must be 36
+    static int gameTitle; // Game Title to be displayed
     static int NUM_OF_PLAYERS; // number of players in Likha
-    static int gameType; // specify game type for scoreAdapter
-    ArrayList<String> playerNames = new ArrayList<>(); // Store PlayerNames and display them in new games
+    static String PLAYER_INITIAL; // Player initial is set based on game
+    static ArrayList<String> playerNames = new ArrayList<>(); // Store PlayerNames and display them in new games
     int[] playerScores;  // Array to hold players score
     int[] lastScore;     // Last correct submitted score
     int[] submittedScore; // current submitted score that will be checked
@@ -47,17 +47,22 @@ public abstract class gameActivity extends AppCompatActivity {
     private GestureDetectorCompat mDetector;  // Gesture Detector for doubleTap to complete the round score
     private RoundScoreAdapter roundScoreAdapter;
 
-    public gameActivity(int FINAL_SCORE, int ROUND_TOTAL, int NUM_OF_PLAYERS, int gameType) {
-        gameActivity.FINAL_SCORE = FINAL_SCORE;
-        gameActivity.ROUND_TOTAL = ROUND_TOTAL;
+    public gameActivity(int gameTitle, int NUM_OF_PLAYERS, String PLAYER_INITIAL) {
+        gameActivity.gameTitle = gameTitle;
         gameActivity.NUM_OF_PLAYERS = NUM_OF_PLAYERS;
-        gameActivity.gameType = gameType;
+        gameActivity.PLAYER_INITIAL = PLAYER_INITIAL;
 
         lastScore = new int[NUM_OF_PLAYERS];
         playerScores = new int[NUM_OF_PLAYERS];
+        submittedScore = new int[NUM_OF_PLAYERS];
 
     }
 
+    @Override
+    public void onBackPressed() {
+        playerNames.clear();
+        super.onBackPressed();
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -92,6 +97,7 @@ public abstract class gameActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
 
         getMenuInflater().inflate(R.menu.actionbar, menu);
+
         return true;
     }
 
@@ -102,7 +108,9 @@ public abstract class gameActivity extends AppCompatActivity {
         setContentView(R.layout.game_layout);
         // Setup Toolbar
         Toolbar myToolbar = findViewById(R.id.game_toolbar);
+        myToolbar.setTitle(getString(gameTitle));
         setSupportActionBar(myToolbar);
+
 
         // Add EditText fields for each player name and score
         final LinearLayout playerNameView = findViewById(R.id.players_initials);
@@ -112,7 +120,9 @@ public abstract class gameActivity extends AppCompatActivity {
         for (int i = 0; i < NUM_OF_PLAYERS; i++) {
 
             EditText playerInitial = new EditText(this, null, 0, R.style.playerNames);
-            playerInitial.setHint(String.format("P%s", String.valueOf(i + 1)));
+            playerInitial.setHint(String.format("%s%s", PLAYER_INITIAL, String.valueOf(i + 1)));
+            if (!playerNames.isEmpty())
+                playerInitial.setText(playerNames.get(i).toString());
             playerInitial.setLayoutParams(params);
             if (i == 0) playerInitial.requestFocus();
             playerNameView.addView(playerInitial);
@@ -165,9 +175,9 @@ public abstract class gameActivity extends AppCompatActivity {
                     if (view instanceof EditText) {
                         String name = ((EditText) view).getText().toString();
                         if (name.equals("")) {
-                            playerNames.add(((EditText) view).getHint().toString());
+                            playerNames.add(String.format("%s%s", PLAYER_INITIAL, i + 1));
                         } else
-                            playerNames.add(((EditText) view).getText().toString());
+                            playerNames.add(i, ((EditText) view).getText().toString());
                     }
                     view.setEnabled(false);
                 }
@@ -209,7 +219,7 @@ public abstract class gameActivity extends AppCompatActivity {
                 }
                 // check submitted score and update it
                 if (submittedScoreCheck())
-                    updatePlayerScore(gameType);
+                    updatePlayerScore();
 
                 // Check if Game ended
                 if (gameEndCheck()) {
@@ -262,7 +272,7 @@ public abstract class gameActivity extends AppCompatActivity {
                     }
                     roundIndex--;
                     roundScores.remove(0);
-                    updatePlayerScore(gameType);
+                    updatePlayerScore();
                     editScoreLayout.setVisibility(View.INVISIBLE);
                     clearCurrentScore();
                     submitBtn.setVisibility(View.VISIBLE);
@@ -317,7 +327,7 @@ public abstract class gameActivity extends AppCompatActivity {
      * @return false if the total input score is more 36 otherwise true
      */
 
-    public abstract boolean autoCompleteScore(int autoFillField);
+    public abstract boolean doubleTapAction(int autoFillField);
 
     /**
      * Store submitted score in @link lastScore array
@@ -345,7 +355,7 @@ public abstract class gameActivity extends AppCompatActivity {
         return scoreCheck(tempScore);
     }
 
-    private void updatePlayerScore(int gameType) {
+    private void updatePlayerScore() {
 
         lastScore = submittedScore;
         // add the score for each player and return true
@@ -353,7 +363,7 @@ public abstract class gameActivity extends AppCompatActivity {
             playerScores[i] += submittedScore[i];
         }
         // create a new @link roundScore object from the currentScore
-        roundScores.add(0, new RoundScores(playerScores, roundIndex, gameType));
+        roundScores.add(0, new RoundScores(playerScores, roundIndex));
         roundScoreAdapter.notifyDataSetChanged();
         // TODO animate adding new item to listView
         roundIndex++;
@@ -366,11 +376,7 @@ public abstract class gameActivity extends AppCompatActivity {
         @Override
         public boolean onDoubleTap(MotionEvent e) {
 
-            if (!autoCompleteScore(vTouch.getId())) {
-                Toast.makeText(getApplicationContext(), String.valueOf(vTouch.getId()),
-                        Toast.LENGTH_SHORT).show();
-            }
-            return true;
+            return doubleTapAction(vTouch.getId());
         }
     }
 }

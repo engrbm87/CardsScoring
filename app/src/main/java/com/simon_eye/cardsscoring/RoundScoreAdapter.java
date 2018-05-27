@@ -11,6 +11,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -34,39 +35,65 @@ public class RoundScoreAdapter extends ArrayAdapter<RoundScores> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+
+        LinearLayout roundScoreLayout;
+        TextView roundScore;
+
+        // Get the {@link RoundScores} object located at this position in the list
+        RoundScores currentRoundScore = getItem(position);
+
         // Check if an existing view is being reused, otherwise inflate the view
         View listItemView = convertView;
         if (listItemView == null) {
             listItemView = LayoutInflater.from(getContext()).inflate(
                     R.layout.scores_list, parent, false);
+            roundScoreLayout = listItemView.findViewById(R.id.roundScoreItem);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
+            for (int i = 0; i < currentRoundScore.getNumOfPlayers(); i++) {
+                roundScore = new TextView(getContext(), null, 0, R.style.roundScoresTextFields);
+                roundScore.setLayoutParams(params);
+                roundScoreLayout.addView(roundScore);
+            }
         }
 
-        // Get the {@link RoundScores} object located at this position in the list
-        RoundScores currentRoundScore = getItem(position);
+        roundScoreLayout = listItemView.findViewById(R.id.roundScoreItem);
+        for (int i = 0; i < roundScoreLayout.getChildCount(); i++) {
+            View view = roundScoreLayout.getChildAt(i);
+            if (view instanceof TextView) {
+                ((TextView) view).setText(currentRoundScore.getPlayerScore(i));
+            }
+        }
 
-        // Find the TextView in the list_item.xml layout with the ID version_name
-        TextView playerOneScore = listItemView.findViewById(R.id.scoreP1);
-        // Get the version name from the current AndroidFlavor object and
-        // set this text on the name TextView
-        playerOneScore.setText(currentRoundScore.getPlayerOneScore());
 
-        // Find the TextView in the list_item.xml layout with the ID version_number
-        TextView playerTwoScore = listItemView.findViewById(R.id.scoreP2);
-        // Get the version number from the current AndroidFlavor object and
-        // set this text on the number TextView
-        playerTwoScore.setText(currentRoundScore.getPlayerTwoScore());
+        // same for round score items
 
-        // Find the TextView in the list_item.xml layout with the ID version_name
-        TextView playerThreeScore = listItemView.findViewById(R.id.scoreP3);
-        // Get the version name from the current AndroidFlavor object and
-        // set this text on the name TextView
-        playerThreeScore.setText(currentRoundScore.getPlayerThreeScore());
 
-        // Find the TextView in the list_item.xml layout with the ID version_number
-        TextView playerFourScore = listItemView.findViewById(R.id.scoreP4);
-        // Get the version number from the current AndroidFlavor object and
-        // set this text on the number TextView
-        playerFourScore.setText(currentRoundScore.getPlayerFourScore());
+        // Assign player scores to layout childs
+
+
+//        // Find the TextView in the list_item.xml layout with the ID version_name
+//        TextView playerOneScore = listItemView.findViewById(R.id.scoreP1);
+//        // Get the version name from the current AndroidFlavor object and
+//        // set this text on the name TextView
+//        playerOneScore.setText(currentRoundScore.getPlayerOneScore());
+//
+//        // Find the TextView in the list_item.xml layout with the ID version_number
+//        TextView playerTwoScore = listItemView.findViewById(R.id.scoreP2);
+//        // Get the version number from the current AndroidFlavor object and
+//        // set this text on the number TextView
+//        playerTwoScore.setText(currentRoundScore.getPlayerTwoScore());
+//
+//        // Find the TextView in the list_item.xml layout with the ID version_name
+//        TextView playerThreeScore = listItemView.findViewById(R.id.scoreP3);
+//        // Get the version name from the current AndroidFlavor object and
+//        // set this text on the name TextView
+//        playerThreeScore.setText(currentRoundScore.getPlayerThreeScore());
+//
+//        // Find the TextView in the list_item.xml layout with the ID version_number
+//        TextView playerFourScore = listItemView.findViewById(R.id.scoreP4);
+//        // Get the version number from the current AndroidFlavor object and
+//        // set this text on the number TextView
+//        playerFourScore.setText(currentRoundScore.getPlayerFourScore());
 
         // Find the TextView in the list_item.xml layout with the ID round_number
         TextView roundNumber = listItemView.findViewById(R.id.round_number);

@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
             // The code in this method will be executed when the numbers View is clicked on.
             @Override
             public void onClick(View view) {
-                Intent tarneebActivity = new Intent(MainActivity.this, com.simon_eye.cardsscoring.tarneebActivity.class);
+                Intent tarneebActivity = new Intent(MainActivity.this, com.simon_eye.cardsscoring.TarneebGame.class);
                 startActivity(tarneebActivity);
             }
         });

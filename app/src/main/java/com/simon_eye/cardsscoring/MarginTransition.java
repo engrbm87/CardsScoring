@@ -27,9 +27,11 @@ public class MarginTransition extends Animation {
     protected void applyTransformation(float interpolatedTime, Transformation t) {
         LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) mViewToTransform.getLayoutParams();
         if (mNewLeftMargin != 0)
-            layoutParams.leftMargin = (int) (mNewLeftMargin * interpolatedTime);
+            layoutParams.setMarginStart((int) (mNewLeftMargin * interpolatedTime));
+//            layoutParams.leftMargin = (int) (mNewLeftMargin * interpolatedTime);
         if (mNewRightMargin != 0)
-            layoutParams.rightMargin = (int) (mNewRightMargin * interpolatedTime);
+            layoutParams.setMarginEnd((int) (mNewRightMargin * interpolatedTime));
+//            layoutParams.rightMargin = (int) (mNewRightMargin * interpolatedTime);
         mViewToTransform.setLayoutParams(layoutParams);
     }
 }
