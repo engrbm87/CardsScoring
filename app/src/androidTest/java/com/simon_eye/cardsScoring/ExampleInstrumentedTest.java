@@ -1,4 +1,4 @@
-package com.simon_eye.cardsscoring;
+package com.simon_eye.cardsScoring;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.simon_eye.cardsscoring", appContext.getPackageName());
+        assertEquals("com.simon_eye.cardsScoring", appContext.getPackageName());
     }
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.simon_eye.cardsscoring">
+    package="com.simon_eye.cardsScoring">
 
     <application
         android:allowBackup="true"
@@ -9,15 +9,19 @@
         android:roundIcon="@mipmap/cards_icon_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name="com.simon_eye.cardsScoring.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LikhaGame"></activity>
-        <activity android:name=".TarneebGame"></activity>
+        <activity
+            android:name="com.simon_eye.cardsScoring.LikhaGame"
+            android:parentActivityName="com.simon_eye.cardsScoring.MainActivity" />
+        <activity
+            android:name="com.simon_eye.cardsScoring.TarneebGame"
+            android:parentActivityName="com.simon_eye.cardsScoring.MainActivity" />
     </application>
 
 </manifest>

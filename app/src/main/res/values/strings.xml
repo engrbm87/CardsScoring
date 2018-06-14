@@ -12,4 +12,9 @@
     <string name="new_gameBtn">New Game</string>
     <string name="deal_left">Deal Left</string>
     <string name="deal_right">Deal Right</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Strings related to Settings -->
+
+
 </resources>

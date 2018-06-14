@@ -1,4 +1,4 @@
-package com.simon_eye.cardsscoring;
+package com.simon_eye.cardsScoring;
 
 import org.junit.Test;
 

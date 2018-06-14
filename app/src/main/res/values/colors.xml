@@ -5,5 +5,5 @@
     <color name="colorAccent">#bf360c</color>
     <color name="cardBackground">#A1887F</color>
     <!-- Background color for app -->
-    <color name="tan_background">#FFF7DA</color>
+    <color name="tan_background">#fff7e0</color>
 </resources>
